@@ -1,19 +1,19 @@
 {
-  "name": "boilerplateapi",
-  "description": "SmartDataCenter Boilerplate API",
-  "version": "1.0.0",
-  "author": "Joyent (joyent.com)",
-  "private": true,
-  "dependencies": {
-    "restify": "1.4.2",
-    "node-uuid": "1.3.3",
-    "filed": "0.0.5",
-    "bunyan": "0.8.0"
-  },
-  "devDependencies": {
-    "tap": "0.2"
-  },
-  "scripts": {
-    "start": "node ./server.js"
-  }
+    "name": "hagfish-watcher",
+    "description": "SmartDataCenter Usage Watcher Agent",
+    "version": "1.0.0",
+    "author": "Joyent (joyent.com)",
+    "private": true,
+    "dependencies": {
+        "kstat": "git://github.com/bcantrill/node-kstat.git#d422c593d5dd0c12b8cdb8d2a6181b3ad9fc19c9",
+        "async": "0.1.18",
+        "mkdirp": "0.3.5",
+        "nodeunit": "0.7.4",
+        "zfs": "git+ssh://git@git.joyent.com:node_zfs.git#b30860be15d298acaa3bca0ae0e32c3ba241304b",
+        "tracker": "git+ssh://git@git.joyent.com:node-tracker.git#857e08723b1e8c19ecd6dec39ea7fdf64b101553"
+    },
+    "scripts": {
+        "postinstall":   "npm/postinstall.sh",
+        "postuninstall": "npm/postuninstall.sh"
+    }
 }
