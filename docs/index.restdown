@@ -39,6 +39,8 @@ on its log file to rotate the file into the next numbered log file
 (usage.log.0, usage.log.1, etc). These numbered log files are ready to be moved
 to manta and removed.
 
+The watcher is deployed as an agent using the same agent SOPs.
+
 
 # Hagfish-Uploader
 
@@ -46,6 +48,9 @@ This is still TBD but I think generally we don't need much more than a zone on
 the Headnode witha scheduled cron job set to grab the `usage.log.[0-9]*` files from every
 server in the datacenter and then copy them to manta to the appropriate
 manta-path and name.
+
+The uploader zone is installed and updated in a similar manner to other core
+zones.
 
 
 # Data
