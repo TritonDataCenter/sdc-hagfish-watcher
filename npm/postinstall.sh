@@ -22,5 +22,7 @@ subfile () {
       $IN > $OUT
 }
 
+cp $DIR/../config.json{.in,}
+
 subfile "$DIR/../smf/manifests/hagfish-watcher.xml.in" "$SMF_DIR/hagfish-watcher.xml"
 svccfg import $SMF_DIR/hagfish-watcher.xml
