@@ -22,7 +22,6 @@ subfile () {
       $IN > $OUT
 }
 
-mkdir -p $DIR/../config
 cp $DIR/../config/config.json{.in,}
 
 subfile "$DIR/../smf/manifests/hagfish-watcher.xml.in" "$SMF_DIR/hagfish-watcher.xml"
