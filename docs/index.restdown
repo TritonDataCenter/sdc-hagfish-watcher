@@ -8,17 +8,20 @@ apisections:
 
 Archive SDC usage data to Manta.
 
-
 # Overview
 
-Hagfish's job is to capture usage data right on the server, store it locally
-and make sure it's archived in manta.
+Capture usage data right on the server, buffering it locally first with
+periodic uploads to Manta.
 
-This is achieved by using two components:
+This is achieved with two components:
 
-- the watcher: periodically records vm state, writes to disk
-- uploader: rotates the watcher file and uploads data to Manta
+- the watcher: periodically records vm state, writes to disk, rotates own files
+- uploader: watches for rotated files and uploads data to Manta
 
+Storing the data locally first makes it less likely to lose important data due
+to a network or service disruption. In such a scenario, all the uploader would
+have to do when service was restored would be to catch up and upload slightly
+more usage log files than usual.
 
 # Hagfish-Watcher
 
@@ -58,10 +61,11 @@ Note:
 
 Data is rerturned exactly as it was on the server. The implications of this is
 that there may be missing values or values present may not be what you would
-expect. For example, one might expect to encounter VMs with missing image_uuid
-values, incorrect pacakge names, etc. Care should be taken to interpret the
-values in the same way and using the same units as the system would. For
-example, tmpfs=128 should be interpreted as 128 megabytes.
+expect (reflecting the state of the VM's configuration on the server). For
+example, one might expect to encounter VMs with missing image_uuid values,
+incorrect pacakge names, etc. Care should also be taken to interpret the values
+in the same way and using the same units as the system would. For example,
+tmpfs=128 should be interpreted as 128 megabytes.
 
 Sample data:
 
@@ -178,7 +182,8 @@ values for values sent and received since the counter was started.
 ## Disk Usage
 
 Disk usage is present in the top-level `disk_usage` value. This contains a hash
-of each dataset belonging to this zone, and the values for the following zfs properties:
+of each dataset belonging to this zone, and the values corresponding to the
+following zfs properties:
 
     name
     used
