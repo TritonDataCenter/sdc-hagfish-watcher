@@ -6,7 +6,7 @@ apisections:
 
 # Hagfish
 
-Hagfish ensures SDC usage data is recorded to Manta.
+Archive SDC usage data to Manta.
 
 
 # Overview
