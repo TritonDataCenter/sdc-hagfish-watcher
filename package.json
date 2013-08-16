@@ -6,11 +6,11 @@
     "private": true,
     "dependencies": {
         "kstat": "git://github.com/bcantrill/node-kstat.git#d422c593d5dd0c12b8cdb8d2a6181b3ad9fc19c9",
-        "async": "0.1.18",
+        "async": "0.2.9",
+        "sax": "0.5.4",
         "mkdirp": "0.3.5",
         "nodeunit": "0.7.4",
-        "zfs": "git+ssh://git@git.joyent.com:node_zfs.git#b30860be15d298acaa3bca0ae0e32c3ba241304b",
-        "tracker": "git+ssh://git@git.joyent.com:node-tracker.git#857e08723b1e8c19ecd6dec39ea7fdf64b101553"
+        "zfs": "git+ssh://git@git.joyent.com:node_zfs.git#b30860be15d298acaa3bca0ae0e32c3ba241304b"
     },
     "scripts": {
         "postinstall":   "npm/postinstall.sh",

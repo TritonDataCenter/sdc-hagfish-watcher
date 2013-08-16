@@ -9,6 +9,8 @@ var path = require('path');
 var Service = require('../lib/service');
 var common = require('../lib/common');
 var Logger = require('bunyan');
+var sax = require('sax');
+var parser = sax.parser(false);
 
 var configFilename = path.join(__dirname, '..', 'config', 'config.json');
 common.loadConfig(configFilename, function (error, config) {
