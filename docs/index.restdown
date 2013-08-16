@@ -8,30 +8,32 @@ apisections:
 
 ## Synopsis
 
-Hagfish is the Smart Data Center service for recording VM usage data and
-storing it in Manta.
+Hagfish ensures SDC usage data is recorded in Manta.
 
 
 ## Overview
 
-The hagfish service resides on SDC compute nodes. It is responsible for
+The hagfish-watcher service resides on SDC head & compute nodes. It is responsible for
 producing periodic updates on the state of all vms on a system. This data is
-then removed from the local machine and copied to Manta for querying and reporting.
+then copied to Manta and removed from the local machine.
 
 
 ## Watcher
 
-Every minute the "watcher" will look at all VMs on the server. It will grab
-their attributes from the zone's zonecfg XML file, and zone parameters. NIC usage
-statistics from kstat.
+Every minute the "watcher" will look at all VMs on the server. It will record:
+
+- VM Datacenter information
+- Zone configuration values and attribuets
+- VM network usage
+- ZFS disk usage
 
 
 ## Data
 
-The data to be streamed out to disk out will be oriented around a VM. Each VM
-comprising one line of JSON within the file. Each line should be self-contained
-and not require any additional information outside of itself. This includes
-recording server uuid, datacenter name, owner uuid.
+A file will be opened for appending. Each line written to the file will
+represent a VM's state at that particular point in time.  Each line should be
+self-contained and not require any additional information outside of itself.
+This includes recording server uuid, datacenter name, owner uuid.
 
 The data recorded by the watcher has been very lightly normalize where
 possible, but in a deliberate attempt to keep the watcher dumb, most
@@ -46,6 +48,7 @@ Sample data:
       "uuid": "0f778be3-bd2e-431b-baa0-a1c4ef2100e2",
       "os_uuid": "0f778be3-bd2e-431b-baa0-a1c4ef2100e2",
       "status": "running",
+      "timestamp": "2013-08-15T16:21:29.023Z",
       "config": {
         "name": "0f778be3-bd2e-431b-baa0-a1c4ef2100e2",
         "debugid": "1",
