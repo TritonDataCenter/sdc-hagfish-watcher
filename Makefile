@@ -68,7 +68,6 @@ release: all deps docs $(SMF_MANIFESTS)
     $(TOP)/node_modules \
     $(TOP)/npm \
     $(TOP)/package.json \
-    $(TOP)/schema \
     $(TOP)/smf \
     $(TMPDIR)/hagfish-watcher
 	(cd $(TMPDIR) && $(TAR) -zcf $(TOP)/$(RELEASE_TARBALL) *)
