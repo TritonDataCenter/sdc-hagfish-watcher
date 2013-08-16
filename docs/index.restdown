@@ -7,12 +7,12 @@ apisections:
 # Hagfish
 
 
-## Synopsis
+# Synopsis
 
 Hagfish ensures SDC usage data is recorded to Manta.
 
 
-## Overview
+# Overview
 
 Hagfish's job is to capture usage data right on the server, store it locally
 and make sure it's archived in manta.
@@ -23,7 +23,7 @@ This is achieved by using two components:
 - uploader: rotates the watcher file and uploads data to Manta
 
 
-## Hagfish-Watcher
+# Hagfish-Watcher
 
 The hagfish-watcher service resides on SDC servers. 
 Every minute the "watcher" will look at all VMs on the server. It will record:
@@ -40,7 +40,7 @@ on its log file to rotate the file into the next numbered log file
 to manta and removed.
 
 
-## Hagfish-Uploader
+# Hagfish-Uploader
 
 This is still TBD but I think generally we don't need much more than a zone on
 the Headnode witha scheduled cron job set to grab the `usage.log.[0-9]*` files from every
@@ -48,7 +48,7 @@ server in the datacenter and then copy them to manta to the appropriate
 manta-path and name.
 
 
-## Data
+# Data
 
 At startup the watcher will open file for appending (/var/log/usage/usage.log).
 Each line written to the file will represent a VM's state at that particular
