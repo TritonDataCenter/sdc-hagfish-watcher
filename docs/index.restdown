@@ -6,39 +6,65 @@ apisections:
 
 # Hagfish
 
+
 ## Synopsis
 
-Hagfish ensures SDC usage data is recorded in Manta.
+Hagfish ensures SDC usage data is recorded to Manta.
 
 
 ## Overview
 
-The hagfish-watcher service resides on SDC head & compute nodes. It is responsible for
-producing periodic updates on the state of all vms on a system. This data is
-then copied to Manta and removed from the local machine.
+Hagfish's job is to capture usage data right on the server, store it locally
+and make sure it's archived in manta.
+
+This is achieved by using two components:
+
+- the watcher: periodically records vm state, writes to disk
+- uploader: rotates the watcher file and uploads data to Manta
 
 
-## Watcher
+## Hagfish-Watcher
 
+The hagfish-watcher service resides on SDC servers. 
 Every minute the "watcher" will look at all VMs on the server. It will record:
 
 - VM Datacenter information
-- Zone configuration values and attribuets
+- Zone configuration values and attributes
 - VM network usage
 - ZFS disk usage
+
+The watcher will log usage information to its log file
+/var/log/usage/usage.log. Periodically, the watcher will run `logadm -c -p now`
+on its log file to rotate the file into the next numbered log file
+(usage.log.0, usage.log.1, etc). These numbered log files are ready to be moved
+to manta and removed.
+
+
+## Hagfish-Uploader
+
+This is still TBD but I think generally we don't need much more than a zone on
+the Headnode witha scheduled cron job set to grab the `usage.log.[0-9]*` files from every
+server in the datacenter and then copy them to manta to the appropriate
+manta-path and name.
 
 
 ## Data
 
-A file will be opened for appending. Each line written to the file will
-represent a VM's state at that particular point in time.  Each line should be
+At startup the watcher will open file for appending (/var/log/usage/usage.log).
+Each line written to the file will represent a VM's state at that particular
+point in time given by the `timestamp` property.  Each line should be
 self-contained and not require any additional information outside of itself.
-This includes recording server uuid, datacenter name, owner uuid.
+This includes recording, for example, the server uuid, datacenter name, owner
+uuid.
 
-The data recorded by the watcher has been very lightly normalize where
-possible, but in a deliberate attempt to keep the watcher dumb, most
-configuration values and tuning parameters are returned back as strings.
+Note:
 
+Data is rerturned exactly as it was on the server. The implications of this is
+that there may be missing values or values present may not be what you would
+expect. For example, one might expect to encounter VMs with missing image_uuid
+values, incorrect pacakge names, etc. Care should be taken to interpret the
+values in the same way and using the same units as the system would. For
+example, tmpfs=128 should be interpreted as 128 megabytes.
 
 Sample data:
 
@@ -132,13 +158,27 @@ Sample data:
       "v": "1"
     }
 
-### Network Usage
+
+## Data Properties
+
+`config`: This represents the contenst of the VM's zonecfg definition. It
+contains the memory and cpu tuning parameters.
+
+`config.attribute`: The attr key/value blocks within the VM's zonecfg definition.
+
+`config.networks`: The networks devices attached to this VM
+
+`network_usage`: The kstat values for each of this VMs NICs.
+
+`disk_usage`: The zfs values for each of this VM's datasets
+
+
+## Network Usage
 
 NIC usage is present in the top-level `network_usage` value. This contains
 values for values sent and received since the counter was started.
 
-
-### Disk Usage
+## Disk Usage
 
 Disk usage is present in the top-level `disk_usage` value. This contains a hash
 of each dataset belonging to this zone, and the values for the following zfs properties:
@@ -154,13 +194,14 @@ of each dataset belonging to this zone, and the values for the following zfs pro
     volsize
 
 
-### Versioning
+## Versioning
 
 Each VM datum must contain a "v" key which will identify the version of the
 given payload. This version can be used to determine what key-schema.
 
-### Manta
+# Manta
 
-When usage log files are rotated off of the compute node and into Manta, they should follow the following naming scheme:
+When usage log files are rotated off of the compute node and into Manta, they
+should follow the following naming scheme:
 
-    /:user/stor/usage/YYYY/MM/DD/HH/:serveruuid.log
+    /admin/stor/usage/YYYY/MM/DD/HH/:serveruuid.log
