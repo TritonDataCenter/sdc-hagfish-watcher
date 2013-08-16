@@ -6,9 +6,11 @@
     "private": true,
     "dependencies": {
         "kstat": "git://github.com/bcantrill/node-kstat.git#d422c593d5dd0c12b8cdb8d2a6181b3ad9fc19c9",
+        "bunyan": "0.21.3",
         "async": "0.2.9",
         "sax": "0.5.4",
         "mkdirp": "0.3.5",
+        "zutil": "git://github.com/mcavage/node-zutil.git#ec96c41299d050c4987bad3148ba1f087b9517d9",
         "nodeunit": "0.7.4",
         "zfs": "git+ssh://git@git.joyent.com:node_zfs.git#b30860be15d298acaa3bca0ae0e32c3ba241304b"
     },
