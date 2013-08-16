@@ -65,6 +65,7 @@ release: all deps docs $(SMF_MANIFESTS)
     $(TOP)/Makefile \
     $(TOP)/bin \
     $(TOP)/build \
+    $(TOP)/config \
     $(TOP)/lib \
     $(TOP)/node_modules \
     $(TOP)/npm \
