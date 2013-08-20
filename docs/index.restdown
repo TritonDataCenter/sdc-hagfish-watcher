@@ -45,9 +45,9 @@ The watcher is deployed as an agent using the same agent SOPs.
 # Hagfish-Uploader
 
 This is still TBD but I think generally we don't need much more than a zone on
-the Headnode witha scheduled cron job set to grab the `usage.log.[0-9]*` files from every
-server in the datacenter and then copy them to manta to the appropriate
-manta-path and name.
+the Headnode witha scheduled cron job set to grab the `usage.log.[0-9]*` files
+from every server in the datacenter and then copy them to manta to the
+appropriate manta-path and name.
 
 The uploader zone is installed and updated in a similar manner to other core
 zones.
@@ -72,7 +72,18 @@ incorrect pacakge names, etc. Care should also be taken to interpret the values
 in the same way and using the same units as the system would. For example,
 tmpfs=128 should be interpreted as 128 megabytes.
 
-Sample data:
+# Log Rotation
+
+On the compute node, the watcher will log to `/var/log/usage.log`. On the hour,
+this log will be rotated according to the following spec:
+
+    /var/log/usage/YYYY/MM/DD/<server-uuid>.<timestamp>.log
+
+Once the logs have been rotated, the agent is done with them and they may be
+archived at any time.
+
+
+# Sample data
 
     {
       "zonename": "0f778be3-bd2e-431b-baa0-a1c4ef2100e2",
