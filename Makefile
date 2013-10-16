@@ -29,10 +29,17 @@ SMF_MANIFESTS_IN = smf/manifests/hagfish-watcher.xml.in
 NODE_PREBUILT_VERSION=v0.10.20
 NODE_PREBUILT_TAG=gz
 
-# Included definitions
+ifeq ($(shell uname -s),SunOS)
+	NODE_PREBUILT_CC_VERSION=4.6.2
+	NODE_PREBUILT_TAG=zone
+endif
+
 include ./tools/mk/Makefile.defs
-include ./tools/mk/Makefile.node_prebuilt.defs
-include ./tools/mk/Makefile.node_deps.defs
+ifeq ($(shell uname -s),SunOS)
+	include ./tools/mk/Makefile.node_prebuilt.defs
+else
+	include ./tools/mk/Makefile.node.defs
+endif
 include ./tools/mk/Makefile.smf.defs
 
 NAME		:= hagfish-watcher
@@ -93,7 +100,10 @@ dumpvar:
 	@echo "$(VAR) is '$($(VAR))'"
 
 include ./tools/mk/Makefile.deps
-include ./tools/mk/Makefile.node_prebuilt.targ
-include ./tools/mk/Makefile.node_deps.targ
+ifeq ($(shell uname -s),SunOS)
+	include ./tools/mk/Makefile.node_prebuilt.targ
+else
+	include ./tools/mk/Makefile.node.targ
+endif
 include ./tools/mk/Makefile.smf.targ
 include ./tools/mk/Makefile.targ
