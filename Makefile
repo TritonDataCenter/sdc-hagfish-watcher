@@ -26,13 +26,8 @@ JSSTYLE_FLAGS    = -o indent=4,doxygen,unparenthesized-return=0
 SMF_MANIFESTS_IN = smf/manifests/hagfish-watcher.xml.in
 
 # Should be the same version as the platform's /usr/node/bin/node.
-NODE_PREBUILT_VERSION=v0.10.20
+NODE_PREBUILT_VERSION=v0.10.21
 NODE_PREBUILT_TAG=gz
-
-ifeq ($(shell uname -s),SunOS)
-	NODE_PREBUILT_CC_VERSION=4.6.2
-	NODE_PREBUILT_TAG=zone
-endif
 
 include ./tools/mk/Makefile.defs
 ifeq ($(shell uname -s),SunOS)
