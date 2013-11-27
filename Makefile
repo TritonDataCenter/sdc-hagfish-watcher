@@ -39,7 +39,7 @@ include ./tools/mk/Makefile.smf.defs
 
 NAME		:= hagfish-watcher
 RELEASE_TARBALL := $(NAME)-$(STAMP).tgz
-TMPDIR          := /tmp/$(STAMP)
+RELSTAGEDIR          := /tmp/$(STAMP)
 NODEUNIT	= $(TOP)/node_modules/.bin/nodeunit
 
 #
@@ -61,7 +61,7 @@ test: $(NODEUNUT)
 .PHONY: release
 release: all deps docs $(SMF_MANIFESTS)
 	@echo "Building $(RELEASE_TARBALL)"
-	@mkdir -p $(TMPDIR)/$(NAME)
+	@mkdir -p $(RELSTAGEDIR)/$(NAME)
 	cd $(TOP) && $(NPM) install
 	cp -r \
     $(TOP)/Makefile \
@@ -73,9 +73,9 @@ release: all deps docs $(SMF_MANIFESTS)
     $(TOP)/npm \
     $(TOP)/package.json \
     $(TOP)/smf \
-    $(TMPDIR)/hagfish-watcher
-	(cd $(TMPDIR) && $(TAR) -zcf $(TOP)/$(RELEASE_TARBALL) *)
-	@rm -rf $(TMPDIR)
+    $(RELSTAGEDIR)/hagfish-watcher
+	(cd $(RELSTAGEDIR) && $(TAR) -zcf $(TOP)/$(RELEASE_TARBALL) *)
+	@rm -rf $(RELSTAGEDIR)
 
 .PHONY: publish
 publish: release
