@@ -6,4 +6,9 @@ docs/*.html
 cscope.in.out
 cscope.po.out
 cscope.out
-smf/manifests/zonetracker.xml
+smf/manifests/*.xml
+.*.swp
+downloads/
+node/
+config/config.json
+hagfish-watcher-*.tgz

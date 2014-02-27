@@ -1,5 +1,4 @@
 {
     "logLevel": "info",
-    "intervalSeconds": 60,
-    "rotateIntervalSeconds": 3600
+    "usageLogDirectory": "/var/log/usage"
 }
