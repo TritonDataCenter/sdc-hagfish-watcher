@@ -8,12 +8,16 @@
         "bunyan": "0.21.3",
         "async": "0.2.9",
         "sax": "0.5.4",
-        "sprintf": "0.1.1",
         "mkdirp": "0.3.5",
         "kstat": "git://github.com/orlandov/node-kstat.git#8c2643153c38f045cfd9dbbde24b644b492974ae",
         "zutil": "git://github.com/orlandov/node-zutil.git#9257881d575dd4496f5283930e6b07ed59685809",
         "nodeunit": "0.7.4",
-        "zfs": "git+ssh://git@git.joyent.com:node_zfs.git#b30860be15d298acaa3bca0ae0e32c3ba241304b"
+        "zfs": "git+ssh://git@git.joyent.com:node_zfs.git#b30860be15d298acaa3bca0ae0e32c3ba241304b",
+        "extsprintf": "1.0.3",
+        "vasync": "1.4.3",
+        "jsprim": "0.5.1",
+        "verror": "1.3.7",
+        "assert-plus": "0.1.5"
     },
     "scripts": {
         "postinstall":   "npm/postinstall.sh",
