@@ -15,21 +15,12 @@ JSSTYLE_FLAGS    = -o indent=4,doxygen,unparenthesized-return=0
 SMF_MANIFESTS_IN = smf/manifests/hagfish-watcher.xml.in
 
 #
-# XXX This node version has been vetted and tested on all of the compute
-# nodes that it will need to run in, which includes (at this time) around
-# ~80 SDC 6.5 hosts in the JPC.  It is not strictly correct to use it on 6.5
-# CNs, as it was built on a more recent platform.  When modifying this code
-# or rebuilding for 6.5 CNs please keep this in mind.
+# Use a build of node compiled on the oldest supported SDC 6.5 platform:
 #
-# Specifically, if you do not understand the operation of pvs(1) and the
-# auditing of private and public operating system interfaces, you will
-# be eaten by a grue.
-#
-# You are not expected to understand this.
-#
+MANTA_BASE	 = http://us-east.manta.joyent.com
 NODE_VERSION	 = v0.10.26
-NODE_BASE_URL	 = http://nodejs.org/dist/$(NODE_VERSION)
-NODE_TARBALL	 = node-$(NODE_VERSION)-sunos-x86.tar.gz
+NODE_BASE_URL	 = $(MANTA_BASE)/Joyent_Dev/public/old_node_builds
+NODE_TARBALL	 = node-$(NODE_VERSION)-sdc65.tar.gz
 
 NODE_EXEC	 = $(TOP)/build/node/bin/node
 NPM_EXEC	 = $(NODE_EXEC) $(TOP)/build/node/bin/npm --unsafe-perm false
@@ -61,6 +52,7 @@ test: $(NODEUNIT)
 	$(NODEUNIT) --reporter=tap test/test-*.js
 
 $(TOP)/downloads/$(NODE_TARBALL):
+	@echo "downloading node $(NODE_VERSION) ..."
 	mkdir -p $(TOP)/downloads
 	curl -f -kL -o $@ '$(NODE_BASE_URL)/$(NODE_TARBALL)'
 	touch $@
@@ -68,8 +60,7 @@ $(TOP)/downloads/$(NODE_TARBALL):
 $(NODE_EXEC): $(TOP)/downloads/$(NODE_TARBALL)
 	@echo "extracting node $(NODE_VERSION) ..."
 	mkdir -p $(TOP)/build/node
-	gtar -xz -C $(TOP)/build/node --strip-components=1 \
-	    -f downloads/$(NODE_TARBALL)
+	gtar -xz -C $(TOP)/build/node -f downloads/$(NODE_TARBALL)
 	touch $@
 
 .PHONY: release
