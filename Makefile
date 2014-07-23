@@ -8,6 +8,7 @@
 DOC_FILES =		index.restdown
 
 JS_FILES := \
+			cmd/get_usage.js \
 			cmd/hagfish-watcher.js \
 			lib/common.js \
 			lib/gzip.js \

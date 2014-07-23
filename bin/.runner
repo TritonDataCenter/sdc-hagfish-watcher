@@ -17,7 +17,7 @@ JS_FILE="${DIR}/cmd/${NAME}.js"
 
 if [[ -t 1 ]]; then
   # if stdout is a tty, then pipe through bunyan:
-  ${NODE} ${JS_FILE} "$@" | ${NODE} ${BUNYAN} -o short
+  ${NODE} ${JS_FILE} "$@" 2>&1 | ${NODE} ${BUNYAN} -o short
 else
   # otherwise, emit raw bunyan logs:
   ${NODE} ${JS_FILE} "$@"
