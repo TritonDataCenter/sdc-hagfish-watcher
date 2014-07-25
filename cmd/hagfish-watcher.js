@@ -12,6 +12,8 @@ var mod_verror = require('verror');
 var lib_common = require('../lib/common');
 var lib_service = require('../lib/service');
 
+var MODE_DIR = parseInt('0750', 8);
+
 var configFilename = mod_path.join(__dirname, '..', 'config', 'config.json');
 lib_common.loadConfig(configFilename, function (error, config) {
     if (error) {
@@ -27,7 +29,7 @@ lib_common.loadConfig(configFilename, function (error, config) {
     /*
      * Create the usage log directory if it does not exist:
      */
-    mod_mkdirp.sync(config.usageLogDirectory, 0750);
+    mod_mkdirp.sync(config.usageLogDirectory, MODE_DIR);
 
     var service = new lib_service.Service(config);
     service.start();
