@@ -5,35 +5,48 @@
 #
 # Files
 #
-DOC_FILES	 = index.restdown
-JS_FILES	:= $(shell ls *.js 2>/dev/null) \
-		   $(shell find lib test -name '*.js' 2>/dev/null)
-JSL_CONF_NODE	 = tools/jsl.node.conf
-JSL_FILES_NODE   = $(JS_FILES)
-JSSTYLE_FILES	 = $(JS_FILES)
-JSSTYLE_FLAGS    = -o indent=4,doxygen,unparenthesized-return=0
-SMF_MANIFESTS_IN = smf/manifests/hagfish-watcher.xml.in
+DOC_FILES =		index.restdown
+
+JS_FILES := \
+			cmd/hagfish-watcher.js \
+			lib/common.js \
+			lib/gzip.js \
+			lib/service_gzip.js \
+			lib/service_usage.js \
+			lib/service.js \
+			lib/ufw.js \
+			lib/usage.js
+
+JSL_CONF_NODE =		tools/jsl.node.conf
+JSL_FILES_NODE =	$(JS_FILES)
+JSSTYLE_FILES =		$(JS_FILES)
+JSSTYLE_FLAGS =		-o indent=4,doxygen,unparenthesized-return=0
+SMF_MANIFESTS_IN =	smf/manifests/hagfish-watcher.xml.in
 
 #
 # Use a build of node compiled on the oldest supported SDC 6.5 platform:
 #
-MANTA_BASE	 = http://us-east.manta.joyent.com
-NODE_VERSION	 = v0.10.26
-NODE_BASE_URL	 = $(MANTA_BASE)/Joyent_Dev/public/old_node_builds
-NODE_TARBALL	 = node-$(NODE_VERSION)-sdc65.tar.gz
+MANTA_BASE =		http://us-east.manta.joyent.com
+NODE_VERSION =		v0.10.26
+NODE_BASE_URL =		$(MANTA_BASE)/Joyent_Dev/public/old_node_builds
+NODE_TARBALL =		node-$(NODE_VERSION)-sdc65.tar.gz
 
-NODE_EXEC	 = $(TOP)/build/node/bin/node
-NPM_EXEC	 = $(NODE_EXEC) $(TOP)/build/node/bin/npm --unsafe-perm false
+NODE_EXEC =		$(TOP)/build/node/bin/node
+NPM_EXEC =		$(NODE_EXEC) $(TOP)/build/node/bin/npm \
+			--unsafe-perm false
 
-CLEAN_FILES	+= node node_modules downloads
+CLEAN_FILES += \
+			node \
+			node_modules \
+			downloads
 
 include ./tools/mk/Makefile.defs
 include ./tools/mk/Makefile.smf.defs
 
-NAME		:= hagfish-watcher
-RELEASE_TARBALL := $(NAME)-$(STAMP).tgz
-RELSTAGEDIR	:= /tmp/$(STAMP)
-NODEUNIT	 = $(TOP)/node_modules/.bin/nodeunit
+NAME :=			hagfish-watcher
+RELEASE_TARBALL :=	$(NAME)-$(STAMP).tgz
+RELSTAGEDIR :=		/tmp/$(STAMP)
+NODEUNIT =		$(TOP)/node_modules/.bin/nodeunit
 
 #
 # Repo-specific targets
@@ -72,6 +85,7 @@ release: all deps docs $(SMF_MANIFESTS)
 	$(TOP)/Makefile \
 	$(TOP)/bin \
 	$(TOP)/build \
+	$(TOP)/cmd \
 	$(TOP)/config \
 	$(TOP)/lib \
 	$(TOP)/node_modules \

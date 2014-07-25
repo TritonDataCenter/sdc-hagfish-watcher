@@ -1,0 +1,24 @@
+#!/bin/ksh
+
+set -o errexit
+set -o pipefail
+
+DIR=$(cd $(dirname $(whence $0))/.. && pwd)
+NAME=$(basename $0)
+
+if [[ $NAME == ".runner" ]]; then
+  echo "ERROR: cannot invoke .runner directly" >&2
+  exit 100
+fi
+
+NODE="${DIR}/build/node/bin/node"
+BUNYAN="${DIR}/node_modules/.bin/bunyan"
+JS_FILE="${DIR}/cmd/${NAME}.js"
+
+if [[ -t 1 ]]; then
+  # if stdout is a tty, then pipe through bunyan:
+  ${NODE} ${JS_FILE} "$@" | ${NODE} ${BUNYAN} -o short
+else
+  # otherwise, emit raw bunyan logs:
+  ${NODE} ${JS_FILE} "$@"
+fi

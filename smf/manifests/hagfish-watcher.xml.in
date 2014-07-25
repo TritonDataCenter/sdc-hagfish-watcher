@@ -16,7 +16,7 @@
     <exec_method
       type="method"
       name="start"
-      exec="/usr/bin/ctrun -l child -o noorphan @@PKGROOT@@/build/node/bin/node @@PKGROOT@@/bin/hagfish-watcher &amp;"
+      exec="/usr/bin/ctrun -l child -o noorphan @@PKGROOT@@/bin/hagfish-watcher &amp;"
       timeout_seconds="60">
       <method_context>
         <method_credential user="root" group="staff"/>

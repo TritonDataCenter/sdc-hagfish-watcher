@@ -14,7 +14,7 @@
         "nodeunit": "0.7.4",
         "zfs": "git+ssh://git@git.joyent.com:node_zfs.git#b30860be15d298acaa3bca0ae0e32c3ba241304b",
         "extsprintf": "1.0.3",
-        "vasync": "1.4.3",
+        "vasync": "1.5.0",
         "jsprim": "0.5.1",
         "verror": "1.3.7",
         "assert-plus": "0.1.5"
