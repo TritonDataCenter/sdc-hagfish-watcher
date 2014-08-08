@@ -54,10 +54,10 @@ NODEUNIT =		$(TOP)/node_modules/.bin/nodeunit
 #
 .PHONY: all
 all: $(SMF_MANIFESTS) | $(NODE_EXEC) $(REPO_DEPS)
-	$(NPM_EXEC) install && $(NPM_EXEC) update
+	$(NPM) install
 
 $(NODEUNIT): | $(NODE_EXEC)
-	$(NPM_EXEC) install
+	$(NPM) install
 
 CLEAN_FILES += $(NODEUNIT) ./node_modules/tap
 
