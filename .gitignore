@@ -12,3 +12,4 @@ downloads/
 node/
 config/config.json
 hagfish-watcher-*.tgz
+hagfish-watcher-*.manifest

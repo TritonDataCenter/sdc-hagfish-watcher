@@ -46,6 +46,7 @@ include ./tools/mk/Makefile.smf.defs
 
 NAME :=			hagfish-watcher
 RELEASE_TARBALL :=	$(NAME)-$(STAMP).tgz
+RELEASE_MANIFEST :=	$(NAME)-$(STAMP).manifest
 RELSTAGEDIR :=		/tmp/$(STAMP)
 NODEUNIT =		$(TOP)/node_modules/.bin/nodeunit
 
@@ -97,6 +98,16 @@ release: all deps docs $(SMF_MANIFESTS)
 	json -f $(TOP)/package.json -e 'this.version += "-$(STAMP)"' \
 	    > $(RELSTAGEDIR)/hagfish-watcher/package.json
 	(cd $(RELSTAGEDIR) && $(TAR) -zcf $(TOP)/$(RELEASE_TARBALL) *)
+	cat $(TOP)/manifest.tmpl | sed \
+		-e "s/UUID/$$(uuid -v4)/" \
+		-e "s/NAME/$$(json name < $(TOP)/package.json)/" \
+		-e "s/VERSION/$$(json version < $(TOP)/package.json)/" \
+		-e "s/DESCRIPTION/$$(json description < $(TOP)/package.json)/" \
+		-e "s/BUILDSTAMP/$(STAMP)/" \
+		-e "s/SIZE/$$(stat --printf="%s" $(TOP)/$(RELEASE_TARBALL))/" \
+		-e "s/SHA/$$(openssl sha1 $(TOP)/$(RELEASE_TARBALL) \
+		    | cut -d ' ' -f2)/" \
+		> $(TOP)/$(RELEASE_MANIFEST)
 	@rm -rf $(RELSTAGEDIR)
 
 .PHONY: publish
@@ -107,6 +118,7 @@ publish: release
 	fi
 	mkdir -p $(BITS_DIR)/$(NAME)
 	cp $(TOP)/$(RELEASE_TARBALL) $(BITS_DIR)/$(NAME)/$(RELEASE_TARBALL)
+	cp $(TOP)/$(RELEASE_MANIFEST) $(BITS_DIR)/$(NAME)/$(RELEASE_MANIFEST)
 
 .PHONY: dumpvar
 dumpvar:
