@@ -95,11 +95,12 @@ release: all deps docs $(SMF_MANIFESTS)
 	$(TOP)/package.json \
 	$(TOP)/smf \
 	$(RELSTAGEDIR)/hagfish-watcher
+	uuid -v4 > $(RELSTAGEDIR)/hagfish-watcher/image_uuid
 	json -f $(TOP)/package.json -e 'this.version += "-$(STAMP)"' \
 	    > $(RELSTAGEDIR)/hagfish-watcher/package.json
 	(cd $(RELSTAGEDIR) && $(TAR) -zcf $(TOP)/$(RELEASE_TARBALL) *)
 	cat $(TOP)/manifest.tmpl | sed \
-		-e "s/UUID/$$(uuid -v4)/" \
+		-e "s/UUID/$$(cat $(RELSTAGEDIR)/hagfish-watcher/image_uuid)/" \
 		-e "s/NAME/$$(json name < $(TOP)/package.json)/" \
 		-e "s/VERSION/$$(json version < $(TOP)/package.json)/" \
 		-e "s/DESCRIPTION/$$(json description < $(TOP)/package.json)/" \
