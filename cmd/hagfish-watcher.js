@@ -1,6 +1,14 @@
 /*
- * Copyright (c) 2013, Joyent, Inc. All rights reserved.
- *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+/*
+ * Copyright (c) 2014, Joyent, Inc.
+ */
+
+/*
  * This is the entry point to the hagfish usage watcher service.
  */
 
@@ -36,3 +44,5 @@ lib_common.loadConfig(configFilename, function (error, config) {
 
     config.log.info('startup complete');
 });
+
+/* vim: set ts=4 sts=4 sw=4 et: */

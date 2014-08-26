@@ -1,27 +1,20 @@
 ---
-title: SDC Usage Watcher
+title: hagfish-watcher
 markdown2extras: wiki-tables, code-friendly
 apisections:
 ---
 
-# Hagfish
+# hagfish-watcher
 
-Archive SDC usage data to Manta.
+Record customer usage telemetry in SDC.
 
 # Overview
 
 Capture usage data right on the server, buffering it locally first with
-periodic uploads to Manta.
-
-This is achieved with two components:
-
-- the watcher: periodically records vm state, writes to disk, rotates own files
-- uploader: watches for rotated files and uploads data to Manta
-
-Storing the data locally first makes it less likely to lose important data due
-to a network or service disruption. In such a scenario, all the uploader would
-have to do when service was restored would be to catch up and upload slightly
-more usage log files than usual.
+periodic uploads to Manta.  Storing the data locally first makes it less likely
+to lose important data due to a network or service disruption. In such a
+scenario, all the uploader would have to do when service was restored would be
+to catch up and upload slightly more usage log files than usual.
 
 # Hagfish-Watcher
 
@@ -40,17 +33,6 @@ on its log file to rotate the file into the next numbered log file
 to manta and removed.
 
 The watcher is deployed as an agent using the same agent SOPs.
-
-
-# Hagfish-Uploader
-
-This is still TBD but I think generally we don't need much more than a zone on
-the Headnode witha scheduled cron job set to grab the `usage.log.[0-9]*` files
-from every server in the datacenter and then copy them to manta to the
-appropriate manta-path and name.
-
-The uploader zone is installed and updated in a similar manner to other core
-zones.
 
 
 # Data
@@ -216,10 +198,3 @@ following zfs properties:
 
 Each VM datum must contain a "v" key which will identify the version of the
 given payload. This version can be used to determine what key-schema.
-
-# Manta
-
-When usage log files are rotated off of the compute node and into Manta, they
-should follow the following naming scheme:
-
-    /admin/stor/usage/YYYY/MM/DD/HH/:serveruuid.log

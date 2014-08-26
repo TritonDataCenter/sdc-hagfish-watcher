@@ -18,7 +18,12 @@
         "assert-plus": "0.1.5"
     },
     "scripts": {
-        "postinstall":   "npm/postinstall.sh",
+        "postinstall": "npm/postinstall.sh",
         "postuninstall": "npm/postuninstall.sh"
+    },
+    "license": "MPL-2.0",
+    "repository": {
+      "type": "git",
+      "url": "git://github.com/joyent/sdc-hagfish-watcher.git"
     }
 }
