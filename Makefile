@@ -11,7 +11,7 @@
 #
 # Files
 #
-DOC_FILES =		index.restdown
+DOC_FILES =		index.md
 
 JS_FILES := \
 			cmd/get_usage.js \

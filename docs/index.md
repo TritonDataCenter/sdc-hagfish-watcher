@@ -1,6 +1,6 @@
 ---
 title: hagfish-watcher
-markdown2extras: wiki-tables, code-friendly
+markdown2extras: tables, code-friendly
 apisections:
 ---
 
@@ -18,7 +18,7 @@ to catch up and upload slightly more usage log files than usual.
 
 # Hagfish-Watcher
 
-The hagfish-watcher service resides on SDC servers. 
+The hagfish-watcher service resides on SDC servers.
 Every minute the "watcher" will look at all VMs on the server. It will record:
 
 - VM Datacenter information
@@ -26,18 +26,12 @@ Every minute the "watcher" will look at all VMs on the server. It will record:
 - VM network usage
 - ZFS disk usage
 
-The watcher will log usage information to its log file
-/var/log/usage/usage.log. Periodically, the watcher will run `logadm -c -p now`
-on its log file to rotate the file into the next numbered log file
-(usage.log.0, usage.log.1, etc). These numbered log files are ready to be moved
-to manta and removed.
-
 The watcher is deployed as an agent using the same agent SOPs.
 
 
 # Data
 
-At startup the watcher will open file for appending (/var/log/usage/usage.log).
+At startup the watcher will open file for appending.
 Each line written to the file will represent a VM's state at that particular
 point in time given by the `timestamp` property.  Each line should be
 self-contained and not require any additional information outside of itself.
@@ -56,13 +50,21 @@ tmpfs=128 should be interpreted as 128 megabytes.
 
 # Log Rotation
 
-On the compute node, the watcher will log to `/var/log/usage.log`. On the hour,
-this log will be rotated according to the following spec:
+On the compute node, the watcher will log to a file in `/var/log/usage`.  The
+filename will contain the date and hour of the telemetry stored in the file,
+using the format:
 
-    /var/log/usage/YYYY/MM/DD/<server-uuid>.<timestamp>.log
+    /var/log/usage/YYYY-MM-DDTHH.log
 
-Once the logs have been rotated, the agent is done with them and they may be
-archived at any time.
+For example, for the hour of 9PM on the 22nd September 2014, the filename is:
+
+    /var/log/usage/2014-09-22T21.log
+
+At the end of each hour, the agent will compress the log file (using the `gzip`
+format).  Once the file is renamed with a `.gz` suffix, it is safe to archive
+and remove from the host.  In a SmartDataCenter deployment, this task is
+generally performed by the [Hermes](http://github.com/joyent/sdc-hermes.git)
+log archival system.
 
 
 # Sample data
@@ -160,17 +162,13 @@ archived at any time.
 
 ## Data Properties
 
-`config`: This represents the contents of the VM's zonecfg definition. It
-contains the memory and cpu tuning parameters.
-
-`config.attribute`: The attr key/value blocks within the VM's zonecfg definition.
-
-`config.networks`: The networks devices attached to this VM
-
-`network_usage`: The kstat values for each of this VMs NICs.
-
-`disk_usage`: The zfs values for each of this VM's datasets
-
+| Property           | Description |
+| ------------------ | ----------- |
+| `config`           | This represents the contents of the VM's zonecfg definition. It contains the memory and cpu tuning parameters. |
+| `config.attribute` | The attr key/value blocks within the VM's zonecfg definition. |
+| `config.networks`  | The networks devices attached to this VM
+| `network_usage`    | The kstat values for each of this VMs NICs. |
+| `disk_usage`       | The zfs values for each of this VM's datasets
 
 ## Network Usage
 
@@ -183,18 +181,17 @@ Disk usage is present in the top-level `disk_usage` value. This contains a hash
 of each dataset belonging to this zone, and the values corresponding to the
 following zfs properties:
 
-    name
-    used
-    available
-    referenced
-    type
-    mountpoint
-    quota
-    origin
-    volsize
-
+* `name`
+* `used`
+* `available`
+* `referenced`
+* `type`
+* `mountpoint`
+* `quota`
+* `origin`
+* `volsize`
 
 ## Versioning
 
-Each VM datum must contain a "v" key which will identify the version of the
+Each VM datum must contain a `"v"` key which will identify the version of the
 given payload. This version can be used to determine what key-schema.
