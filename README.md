@@ -8,6 +8,10 @@ usage, to disk files once per minute.  Usage data is grouped into hourly files,
 named for the time and date of that hour.  These usage files may be archived by
 the operator, potentially using the SDC log archival service, [hermes][hermes].
 
+This repository is part of the Joyent SmartDataCenter project (SDC).  For
+contribution guidelines, issues, and general documentation, visit the main
+[SDC](http://github.com/joyent/sdc) project page.
+
 ## License
 
 This Source Code Form is subject to the terms of the Mozilla Public License, v.
