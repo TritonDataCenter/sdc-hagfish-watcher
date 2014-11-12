@@ -8,23 +8,24 @@
     Copyright (c) 2014, Joyent, Inc.
 -->
 
-# sdc-hagfish-watcher
+# SDC Hagfish Watcher
 
-This repository is part of the Joyent SmartDataCenter project (SDC).  For
-contribution guidelines, issues, and general documentation, visit the main
-[SDC](http://github.com/joyent/sdc) project page.
+This repository is part of the SmartDataCenter (SDC) project. For
+contribution guidelines, issues, and general documentation, visit the
+[main SDC project](http://github.com/joyent/sdc).
 
-The `hagfish-watcher` agent is the Smart Data Center (SDC) service for
+The `hagfish-watcher` agent is the SDC service for
 recording telemetry about customer workloads for usage monitoring and billing
-purposes.  This agent runs on every compute node in an SDC datacenter, writing
+purposes. This agent runs on every compute node, writing
 usage records that describe customer instances and their disk and network
-usage, to disk files once per minute.  Usage data is grouped into hourly files,
-named for the time and date of that hour.  These usage files may be archived by
+usage to disk files once per minute. Usage data is aggregated into
+hourly files. These usage files may be archived by
 the operator, potentially using the SDC log archival service, [hermes][hermes].
 
 ## License
 
-This Source Code Form is subject to the terms of the Mozilla Public License, v.
-2.0.  For the full license text see LICENSE, or http://mozilla.org/MPL/2.0/.
+SDC Hagfish Watcher is licensed under the
+[Mozilla Public License version 2.0](http://mozilla.org/MPL/2.0/).
+See the file LICENSE.
 
 [hermes]: https://github.com/joyent/sdc-hermes
