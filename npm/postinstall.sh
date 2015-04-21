@@ -86,6 +86,8 @@ adopt_instance_if_necessary()
     fi
 }
 
+# This is a best effort. We rely into a cn-agent dedicated task to register
+# new agent instances when needed.
 adopt_instance()
 {
     typeset instance=$1
@@ -96,32 +98,17 @@ adopt_instance()
     typeset para=""
     typeset i=0
 
-    while [[ -z ${service} && ${i} -lt 48 ]]; do
-        service=$(curl "${SAPI_URL}/services?type=agent&name=${AGENT}"\
-            -sS -H accept:application/json | json -Ha uuid)
-        if [[ -z ${service} ]]; then
-            echo "Unable to get service uuid from sapi yet.  Sleeping..."
-            sleep 5
-        fi
-        i=$((${i} + 1))
-    done
+    service=$(curl "${SAPI_URL}/services?type=agent&name=${AGENT}"\
+        -sS -H accept:application/json | json -Ha uuid)
+
     [[ -n ${service} ]] || \
         warn_and_exit "Unable to get service uuid for role ${AGENT} from SAPI"
 
-    i=0
-    while [[ -z ${sapi_instance} && ${i} -lt 48 ]]; do
-        para="{ \"service_uuid\" : \"${service}\", \"uuid\" : \"${instance}\" }"
-        sapi_instance=$(curl ${SAPI_URL}/instances -sS -X POST \
-            -H content-type:application/json \
-            -d "${para}" \
-        | json -H uuid)
-        if [[ -z ${sapi_instance} ]]; then
-            echo "Unable to adopt ${AGENT} ${instance} into sapi yet." \
-                "Sleeping..."
-            sleep 5
-        fi
-        i=$((${i} + 1))
-    done
+    para="{ \"service_uuid\" : \"${service}\", \"uuid\" : \"${instance}\" }"
+    sapi_instance=$(curl ${SAPI_URL}/instances -sS -X POST \
+        -H content-type:application/json \
+        -d "${para}" \
+    | json -H uuid)
 
     [[ -n ${sapi_instance} ]] \
         || warn_and_exit "Unable to adopt ${instance} into SAPI"
