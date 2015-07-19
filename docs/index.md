@@ -11,7 +11,7 @@ Record customer usage telemetry in SDC.
 # Overview
 
 Capture usage data right on the server, buffering it locally first with
-periodic uploads to Manta.  Storing the data locally first makes it less likely
+periodic uploads to Manta. Storing the data locally first makes it less likely
 to lose important data due to a network or service disruption. In such a
 scenario, all the uploader would have to do when service was restored would be
 to catch up and upload slightly more usage log files than usual.
@@ -33,7 +33,7 @@ The watcher is deployed as an agent using the same agent SOPs.
 
 At startup the watcher will open file for appending.
 Each line written to the file will represent a VM's state at that particular
-point in time given by the `timestamp` property.  Each line should be
+point in time given by the `timestamp` property. Each line should be
 self-contained and not require any additional information outside of itself.
 This includes recording, for example, the server uuid, datacenter name, owner
 uuid.
@@ -50,7 +50,7 @@ tmpfs=128 should be interpreted as 128 megabytes.
 
 # Log Rotation
 
-On the compute node, the watcher will log to a file in `/var/log/usage`.  The
+On the compute node, the watcher will log to a file in `/var/log/usage`. The
 filename will contain the date and hour of the telemetry stored in the file,
 using the format:
 
@@ -61,8 +61,8 @@ For example, for the hour of 9PM on the 22nd September 2014, the filename is:
     /var/log/usage/2014-09-22T21.log
 
 At the end of each hour, the agent will compress the log file (using the `gzip`
-format).  Once the file is renamed with a `.gz` suffix, it is safe to archive
-and remove from the host.  In a SmartDataCenter deployment, this task is
+format). Once the file is renamed with a `.gz` suffix, it is safe to archive
+and remove from the host. In a SmartDataCenter deployment, this task is
 generally performed by the [Hermes](http://github.com/joyent/sdc-hermes.git)
 log archival system.
 
