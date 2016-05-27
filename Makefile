@@ -5,7 +5,7 @@
 #
 
 #
-# Copyright 2015 Joyent, Inc.
+# Copyright (c) 2014, Joyent, Inc.
 #
 
 #
@@ -57,24 +57,14 @@ RELSTAGEDIR :=		/tmp/$(STAMP)
 NODEUNIT =		$(TOP)/node_modules/.bin/nodeunit
 
 #
-# Due to the unfortunate nature of npm, the Node Package Manager, there appears
-# to be no way to assemble our dependencies without running the lifecycle
-# scripts.  These lifecycle scripts should not be run except in the context of
-# an agent installation or uninstallation, so we provide a magic environment
-# varible to disable them here.
-#
-NPM_ENV =		SDC_AGENT_SKIP_LIFECYCLE=yes
-RUN_NPM_INSTALL =	$(NPM_ENV) $(NPM_EXEC) install
-
-#
 # Repo-specific targets
 #
 .PHONY: all
 all: $(SMF_MANIFESTS) | $(NODE_EXEC) $(REPO_DEPS)
-	$(RUN_NPM_INSTALL)
+	$(NPM_EXEC) install
 
 $(NODEUNIT): | $(NODE_EXEC)
-	$(RUN_NPM_INSTALL)
+	$(NPM_EXEC) install
 
 CLEAN_FILES += $(NODEUNIT) ./node_modules/tap
 
@@ -98,7 +88,7 @@ $(NODE_EXEC): $(TOP)/downloads/$(NODE_TARBALL)
 release: all deps docs $(SMF_MANIFESTS)
 	@echo "Building $(RELEASE_TARBALL)"
 	@mkdir -p $(RELSTAGEDIR)/$(NAME)
-	cd $(TOP) && $(RUN_NPM_INSTALL)
+	cd $(TOP) && $(NPM_EXEC) install
 	cp -r \
 	$(TOP)/Makefile \
 	$(TOP)/bin \
