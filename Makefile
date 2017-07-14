@@ -5,7 +5,7 @@
 #
 
 #
-# Copyright (c) 2014, Joyent, Inc.
+# Copyright (c) 2017, Joyent, Inc.
 #
 
 #
@@ -30,91 +30,65 @@ JSSTYLE_FILES =		$(JS_FILES)
 JSSTYLE_FLAGS =		-o indent=4,doxygen,unparenthesized-return=0
 SMF_MANIFESTS_IN =	smf/manifests/hagfish-watcher.xml.in
 
-#
-# Use a build of node compiled on the oldest supported SDC 6.5 platform:
-#
-MANTA_BASE =		http://us-east.manta.joyent.com
-NODE_VERSION =		v0.10.26
-NODE_BASE_URL =		$(MANTA_BASE)/Joyent_Dev/public/old_node_builds
-NODE_TARBALL =		node-$(NODE_VERSION)-sdc65.tar.gz
+NODE_PREBUILT_VERSION =	v0.10.48
+NODE_PREBUILT_TAG =	gz
+NODE_PREBUILT_IMAGE =	fd2cc906-8938-11e3-beab-4359c665ac99
 
-NODE_EXEC =		$(TOP)/build/node/bin/node
-NPM_EXEC =		$(NODE_EXEC) $(TOP)/build/node/bin/npm \
-			--unsafe-perm false
-
-CLEAN_FILES += \
-			node \
-			node_modules \
-			downloads
+#
+# Due to the unfortunate nature of NPM, the Node Package Manager, there appears
+# to be no way to assemble our dependencies without running the lifecycle
+# scripts.  These lifecycle scripts should not be run except in the context of
+# an agent installation or uninstallation, so we provide a magic environment
+# varible to disable them here.
+#
+NPM_ENV =		SDC_AGENT_SKIP_LIFECYCLE=yes
 
 include ./tools/mk/Makefile.defs
 include ./tools/mk/Makefile.smf.defs
+include ./tools/mk/Makefile.node_prebuilt.defs
+include ./tools/mk/Makefile.node_modules.defs
 
 NAME :=			hagfish-watcher
 RELEASE_TARBALL :=	$(NAME)-$(STAMP).tgz
 RELEASE_MANIFEST :=	$(NAME)-$(STAMP).manifest
 RELSTAGEDIR :=		/tmp/$(STAMP)
-NODEUNIT =		$(TOP)/node_modules/.bin/nodeunit
 
 #
 # Repo-specific targets
 #
 .PHONY: all
-all: $(SMF_MANIFESTS) | $(NODE_EXEC) $(REPO_DEPS)
-	$(NPM_EXEC) install
-
-$(NODEUNIT): | $(NODE_EXEC)
-	$(NPM_EXEC) install
-
-CLEAN_FILES += $(NODEUNIT) ./node_modules/tap
-
-.PHONY: test
-test: $(NODEUNIT)
-	$(NODEUNIT) --reporter=tap test/test-*.js
-
-$(TOP)/downloads/$(NODE_TARBALL):
-	@echo "downloading node $(NODE_VERSION) ..."
-	mkdir -p $(TOP)/downloads
-	curl -f -kL -o $@ '$(NODE_BASE_URL)/$(NODE_TARBALL)'
-	touch $@
-
-$(NODE_EXEC): $(TOP)/downloads/$(NODE_TARBALL)
-	@echo "extracting node $(NODE_VERSION) ..."
-	mkdir -p $(TOP)/build/node
-	gtar -xz -C $(TOP)/build/node -f downloads/$(NODE_TARBALL)
-	touch $@
+all: $(STAMP_NODE_MODULES) $(SMF_MANIFESTS)
 
 .PHONY: release
-release: all deps docs $(SMF_MANIFESTS)
+release: all deps docs
 	@echo "Building $(RELEASE_TARBALL)"
 	@mkdir -p $(RELSTAGEDIR)/$(NAME)
-	cd $(TOP) && $(NPM_EXEC) install
 	cp -r \
-	$(TOP)/Makefile \
-	$(TOP)/bin \
-	$(TOP)/build \
-	$(TOP)/cmd \
-	$(TOP)/config \
-	$(TOP)/lib \
-	$(TOP)/node_modules \
-	$(TOP)/npm \
-	$(TOP)/package.json \
-	$(TOP)/smf \
-	$(RELSTAGEDIR)/hagfish-watcher
-	uuid -v4 > $(RELSTAGEDIR)/hagfish-watcher/image_uuid
+	    $(TOP)/bin \
+	    $(TOP)/cmd \
+	    $(TOP)/config \
+	    $(TOP)/lib \
+	    $(TOP)/node_modules \
+	    $(TOP)/npm \
+	    $(TOP)/package.json \
+	    $(TOP)/smf \
+	    $(RELSTAGEDIR)/$(NAME)
+	mkdir -p $(RELSTAGEDIR)/$(NAME)/build/node/bin
+	cp build/node/bin/node $(RELSTAGEDIR)/$(NAME)/build/node/bin/node
+	uuid -v4 > $(RELSTAGEDIR)/$(NAME)/image_uuid
 	json -f $(TOP)/package.json -e 'this.version += "-$(STAMP)"' \
-	    > $(RELSTAGEDIR)/hagfish-watcher/package.json
-	(cd $(RELSTAGEDIR) && $(TAR) -zcf $(TOP)/$(RELEASE_TARBALL) *)
-	cat $(TOP)/manifest.tmpl | sed \
-		-e "s/UUID/$$(cat $(RELSTAGEDIR)/hagfish-watcher/image_uuid)/" \
-		-e "s/NAME/$$(json name < $(TOP)/package.json)/" \
-		-e "s/VERSION/$$(json version < $(TOP)/package.json)/" \
-		-e "s/DESCRIPTION/$$(json description < $(TOP)/package.json)/" \
-		-e "s/BUILDSTAMP/$(STAMP)/" \
-		-e "s/SIZE/$$(stat --printf="%s" $(TOP)/$(RELEASE_TARBALL))/" \
-		-e "s/SHA/$$(openssl sha1 $(TOP)/$(RELEASE_TARBALL) \
-		    | cut -d ' ' -f2)/" \
-		> $(TOP)/$(RELEASE_MANIFEST)
+	    > $(RELSTAGEDIR)/$(NAME)/package.json
+	cd $(RELSTAGEDIR) && $(TAR) -zcf $(TOP)/$(RELEASE_TARBALL) *
+	sed \
+	    -e "s/UUID/$$(cat $(RELSTAGEDIR)/$(NAME)/image_uuid)/" \
+	    -e "s/NAME/$$(json -f $(TOP)/package.json name)/" \
+	    -e "s/VERSION/$$(json -f $(TOP)/package.json version)/" \
+	    -e "s/DESCRIPTION/$$(json -f $(TOP)/package.json description)/" \
+	    -e "s/BUILDSTAMP/$(STAMP)/" \
+	    -e "s/SIZE/$$(stat --printf="%s" $(TOP)/$(RELEASE_TARBALL))/" \
+	    -e "s/SHA/$$(openssl sha1 $(TOP)/$(RELEASE_TARBALL) \
+	        | cut -d ' ' -f2)/" \
+	    < $(TOP)/manifest.tmpl > $(TOP)/$(RELEASE_MANIFEST)
 	@rm -rf $(RELSTAGEDIR)
 
 .PHONY: publish
@@ -138,3 +112,5 @@ dumpvar:
 include ./tools/mk/Makefile.deps
 include ./tools/mk/Makefile.smf.targ
 include ./tools/mk/Makefile.targ
+include ./tools/mk/Makefile.node_prebuilt.targ
+include ./tools/mk/Makefile.node_modules.targ
