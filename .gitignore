@@ -8,8 +8,8 @@ cscope.po.out
 cscope.out
 smf/manifests/*.xml
 .*.swp
-downloads/
 node/
 config/config.json
 hagfish-watcher-*.tgz
 hagfish-watcher-*.manifest
+make_stamps/
