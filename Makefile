@@ -54,7 +54,6 @@ NAME :=			hagfish-watcher
 RELEASE_TARBALL :=	$(NAME)-$(STAMP).tgz
 RELEASE_MANIFEST :=	$(NAME)-$(STAMP).manifest
 RELSTAGEDIR :=		/tmp/$(STAMP)
-NODEUNIT =		$(TOP)/node_modules/.bin/nodeunit
 
 #
 # Repo-specific targets
@@ -62,15 +61,6 @@ NODEUNIT =		$(TOP)/node_modules/.bin/nodeunit
 .PHONY: all
 all: $(SMF_MANIFESTS) | $(NODE_EXEC) $(REPO_DEPS)
 	$(NPM_EXEC) install
-
-$(NODEUNIT): | $(NODE_EXEC)
-	$(NPM_EXEC) install
-
-CLEAN_FILES += $(NODEUNIT) ./node_modules/tap
-
-.PHONY: test
-test: $(NODEUNIT)
-	$(NODEUNIT) --reporter=tap test/test-*.js
 
 $(TOP)/downloads/$(NODE_TARBALL):
 	@echo "downloading node $(NODE_VERSION) ..."
