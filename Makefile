@@ -5,7 +5,7 @@
 #
 
 #
-# Copyright (c) 2014, Joyent, Inc.
+# Copyright (c) 2019, Joyent, Inc.
 #
 
 #
@@ -47,13 +47,17 @@ CLEAN_FILES += \
 			node_modules \
 			downloads
 
-include ./tools/mk/Makefile.defs
-include ./tools/mk/Makefile.smf.defs
+ENGBLD_REQUIRE := $(shell git submodule update --init deps/eng)
+
+include ./deps/eng/tools/mk/Makefile.defs
+TOP ?= $(error Unable to access eng.git submodule Makefiles.)
+
+include ./deps/eng/tools/mk/Makefile.smf.defs
 
 NAME :=			hagfish-watcher
 RELEASE_TARBALL :=	$(NAME)-$(STAMP).tgz
 RELEASE_MANIFEST :=	$(NAME)-$(STAMP).manifest
-RELSTAGEDIR :=		/tmp/$(STAMP)
+RELSTAGEDIR :=		/tmp/$(NAME)-$(STAMP)
 
 #
 # Repo-specific targets
@@ -94,7 +98,7 @@ release: all deps docs $(SMF_MANIFESTS)
 	uuid -v4 > $(RELSTAGEDIR)/hagfish-watcher/image_uuid
 	json -f $(TOP)/package.json -e 'this.version += "-$(STAMP)"' \
 	    > $(RELSTAGEDIR)/hagfish-watcher/package.json
-	(cd $(RELSTAGEDIR) && $(TAR) -zcf $(TOP)/$(RELEASE_TARBALL) *)
+	(cd $(RELSTAGEDIR) && $(TAR) -I pigz -cf $(TOP)/$(RELEASE_TARBALL) *)
 	cat $(TOP)/manifest.tmpl | sed \
 		-e "s/UUID/$$(cat $(RELSTAGEDIR)/hagfish-watcher/image_uuid)/" \
 		-e "s/NAME/$$(json name < $(TOP)/package.json)/" \
@@ -109,13 +113,9 @@ release: all deps docs $(SMF_MANIFESTS)
 
 .PHONY: publish
 publish: release
-	@if [[ -z "$(BITS_DIR)" ]]; then \
-		@echo "error: 'BITS_DIR' must be set for 'publish' target"; \
-		exit 1; \
-	fi
-	mkdir -p $(BITS_DIR)/$(NAME)
-	cp $(TOP)/$(RELEASE_TARBALL) $(BITS_DIR)/$(NAME)/$(RELEASE_TARBALL)
-	cp $(TOP)/$(RELEASE_MANIFEST) $(BITS_DIR)/$(NAME)/$(RELEASE_MANIFEST)
+	mkdir -p $(ENGBLD_BITS_DIR)/$(NAME)
+	cp $(TOP)/$(RELEASE_TARBALL) $(ENGBLD_BITS_DIR)/$(NAME)/$(RELEASE_TARBALL)
+	cp $(TOP)/$(RELEASE_MANIFEST) $(ENGBLD_BITS_DIR)/$(NAME)/$(RELEASE_MANIFEST)
 
 .PHONY: dumpvar
 dumpvar:
@@ -125,6 +125,6 @@ dumpvar:
 	fi
 	@echo "$(VAR) is '$($(VAR))'"
 
-include ./tools/mk/Makefile.deps
-include ./tools/mk/Makefile.smf.targ
-include ./tools/mk/Makefile.targ
+include ./deps/eng/tools/mk/Makefile.deps
+include ./deps/eng/tools/mk/Makefile.smf.targ
+include ./deps/eng/tools/mk/Makefile.targ
