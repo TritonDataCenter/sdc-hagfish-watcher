@@ -8,8 +8,8 @@
         "bunyan": "0.21.3",
         "sax": "0.5.4",
         "mkdirp": "0.3.5",
-        "kstat": "git://github.com/orlandov/node-kstat.git#8c2643153c38f045cfd9dbbde24b644b492974ae",
-        "zutil": "git://github.com/orlandov/node-zutil.git#9257881d575dd4496f5283930e6b07ed59685809",
+        "kstat": "^1.0.2",
+        "zutil": "1.0.0",
         "extsprintf": "1.0.3",
         "vasync": "1.5.0",
         "jsprim": "0.5.1",
@@ -23,6 +23,6 @@
     "license": "MPL-2.0",
     "repository": {
       "type": "git",
-      "url": "git://github.com/joyent/sdc-hagfish-watcher.git"
+      "url": "https://github.com/joyent/sdc-hagfish-watcher.git"
     }
 }
