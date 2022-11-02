@@ -63,7 +63,7 @@ For example, for the hour of 9PM on the 22nd September 2014, the filename is:
 At the end of each hour, the agent will compress the log file (using the `gzip`
 format).  Once the file is renamed with a `.gz` suffix, it is safe to archive
 and remove from the host.  In a SmartDataCenter deployment, this task is
-generally performed by the [Hermes](http://github.com/joyent/sdc-hermes.git)
+generally performed by the [Hermes](http://github.com/TritonDataCenter/sdc-hermes.git)
 log archival system.
 
 

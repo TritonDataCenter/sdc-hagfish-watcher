@@ -23,6 +23,6 @@
     "license": "MPL-2.0",
     "repository": {
       "type": "git",
-      "url": "https://github.com/joyent/sdc-hagfish-watcher.git"
+      "url": "https://github.com/TritonDataCenter/sdc-hagfish-watcher.git"
     }
 }

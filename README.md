@@ -6,13 +6,14 @@
 
 <!--
     Copyright (c) 2014, Joyent, Inc.
+    Copyright 2022 MNX Cloud, Inc.
 -->
 
 # sdc-hagfish-watcher
 
 This repository is part of the Joyent SmartDataCenter project (SDC).  For
 contribution guidelines, issues, and general documentation, visit the main
-[SDC](http://github.com/joyent/sdc) project page.
+[SDC](http://github.com/TritonDataCenter/sdc) project page.
 
 The `hagfish-watcher` agent is the Smart Data Center (SDC) service for
 recording telemetry about customer workloads for usage monitoring and billing
@@ -27,4 +28,4 @@ the operator, potentially using the SDC log archival service, [hermes][hermes].
 This Source Code Form is subject to the terms of the Mozilla Public License, v.
 2.0.  For the full license text see LICENSE, or http://mozilla.org/MPL/2.0/.
 
-[hermes]: https://github.com/joyent/sdc-hermes
+[hermes]: https://github.com/TritonDataCenter/sdc-hermes
