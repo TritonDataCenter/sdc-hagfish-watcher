@@ -7,11 +7,18 @@
 
 #
 # Copyright (c) 2014, Joyent, Inc.
+# Copyright 2023 MNX Cloud, Inc.
 #
 
 set -o errexit
 set -o pipefail
 set -o xtrace
+
+if [[ $(uname -s) == "Linux" ]]; then
+    echo "Skipping hagfish-watcher postinstall on Linux for now"
+    exit 0
+fi
+
 
 DIR=$(dirname $(whence $0))
 

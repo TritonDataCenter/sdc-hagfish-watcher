@@ -2,7 +2,7 @@
     "name": "hagfish-watcher",
     "description": "SmartDataCenter Usage Watcher Agent",
     "version": "1.0.1",
-    "author": "Joyent (joyent.com)",
+    "author": "MNX Cloud (mnx.io)",
     "private": true,
     "dependencies": {
         "bunyan": "0.21.3",

@@ -6,7 +6,13 @@
 
 #
 # Copyright (c) 2014, Joyent, Inc.
+# Copyright 2023 MNX Cloud, Inc.
 #
+
+if [[ $(uname -s) == "Linux" ]]; then
+    echo "Skipping hagfish-watcher postuninstall on Linux for now"
+    exit 0
+fi
 
 export SMFDIR=$npm_config_smfdir
 
