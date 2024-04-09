@@ -33,7 +33,7 @@ SMF_MANIFESTS_IN =	smf/manifests/hagfish-watcher.xml.in
 #
 # Use a build of node compiled on the oldest supported SDC 6.5 platform:
 #
-MANTA_BASE =		http://us-east.manta.joyent.com
+MANTA_BASE =		http://us-central.manta.mnx.io
 NODE_VERSION =		v0.10.26
 NODE_BASE_URL =		$(MANTA_BASE)/Joyent_Dev/public/old_node_builds
 NODE_TARBALL =		node-$(NODE_VERSION)-sdc65.tar.gz
