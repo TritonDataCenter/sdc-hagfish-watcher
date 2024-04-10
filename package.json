@@ -8,7 +8,7 @@
         "bunyan": "0.21.3",
         "sax": "0.5.4",
         "mkdirp": "0.3.5",
-        "kstat": "1.1.1",
+        "kstat": "1.0.3",
         "zutil": "1.0.0",
         "extsprintf": "1.0.3",
         "vasync": "1.5.0",
